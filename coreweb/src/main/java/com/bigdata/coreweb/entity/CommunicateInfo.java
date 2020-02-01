@@ -1,9 +1,12 @@
 package com.bigdata.coreweb.entity;
 
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
+import java.sql.Date;
+
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -19,94 +22,85 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("communicate_info")
+@TableName("sjhm")
 public class CommunicateInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    /**
+     * 主键
+     */
+    @TableId("id")
+    private Long id;
+    
     /**
      * 手机号码
      */
-    @TableId("mobie_phone")
+    @TableField("sj")
     private Long mobiePhone;
 
     /**
      * 所属运营商
      */
-    @TableField("belong_company")
+    @TableField("yys")
     private String belongCompany;
 
     /**
      * 号码归属地
      */
-    @TableField("belong_zone")
+    @TableField("gsd")
     private String belongZone;
+    
+    /**
+     * 用户类型（武汉返回还是湖北省内其他城市返回）
+     */
+    @TableField("lx")
+    private String type;
 
     /**
      * 确认时间
      */
-    @TableField("confirm_time")
-    private Long confirmTime;
+    @TableField("date")
+    private Date confirmTime;
 
     /**
      * 到访地区行政编号
      */
-    @TableField("visit_zone_code")
-    private String visitZoneCode;
+    //@TableField("visit_zone_code")
+    //private String visitZoneCode;
 
     /**
-     * 到访地区
+     * 到访城市
      */
-    @TableField("visit_zone")
+    @TableField("dfds")
     private String visitZone;
 
     /**
-     * 所在区县
+     * 到访区县
      */
-    @TableField("location")
+    @TableField("dfxq")
     private String location;
-
-    /**
-     * 驻留天数
-     */
-    @TableField("lingen_days")
-    private Integer lingenDays;
-
-    /**
-     * 离开日期
-     */
-    @TableField("leave_date")
-    private Long leaveDate;
 
     /**
      * 基站标识
      */
-    @TableField("station_id")
+    @TableField("jzbs")
     private String stationId;
 
     /**
      * 基站名称
      */
-    @TableField("station_name")
+    @TableField("jzmc")
     private String stationName;
-
+    
     /**
-     * 数据导入人员
+     * 离开湖北或者武汉的时间（联通有，电信、移动数据无）
      */
-    @TableField("create_user")
-    private String createUser;
-
+    @TableField("lksj")
+    private String stayDate;
+    
     /**
-     * 修改人员
+     * 在湖北或武汉停留的时间（联通有，电信、移动数据无）
      */
-    @TableField("update_user")
-    private String updateUser;
-
-    /**
-     * 状态（N 初始 A已排查 V无效）
-     */
-    @TableField("status")
-    private String status;
-
-
+    @TableField("zlsj")
+    private String levelDate;
 }

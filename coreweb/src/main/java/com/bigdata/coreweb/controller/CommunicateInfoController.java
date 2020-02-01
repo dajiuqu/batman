@@ -1,13 +1,19 @@
 package com.bigdata.coreweb.controller;
 
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bigdata.coreweb.common.ResultInfo;
+import com.bigdata.coreweb.entity.CommunicateInfo;
+import com.bigdata.coreweb.model.CommunicateParam;
 import com.bigdata.coreweb.service.ICommunicateInfoService;
 import com.bigdata.coreweb.util.ResultInfoUtil;
 
@@ -32,8 +38,41 @@ public class CommunicateInfoController {
 	 * @return
 	 */
 	@GetMapping("/list")
-	public ResultInfo list(Page page) {
-		Page data = communicateInfoService.page(page);
+	public ResultInfo list(Page page, CommunicateParam param) {
+		Page data = communicateInfoService.page(page, param.buildQuery());
 		return ResultInfoUtil.success(data);
+	}
+	
+	/**
+	 * 新增通信情况
+	 * @param communicateInfo
+	 * @return
+	 */
+	@PostMapping("/save")
+	public ResultInfo save(@RequestBody CommunicateInfo communicateInfo) {
+		communicateInfoService.save(communicateInfo);
+		return ResultInfoUtil.success();
+	}
+	
+	/**
+	 * 修改通信情况
+	 * @param communicateInfo
+	 * @return
+	 */
+	@PostMapping("/update")
+	public ResultInfo update(@RequestBody CommunicateInfo communicateInfo) {
+		communicateInfoService.updateById(communicateInfo);
+		return ResultInfoUtil.success();
+	}
+	
+	/**
+	 * 删除通信情况
+	 * @param ids
+	 * @return
+	 */
+	@PostMapping("/delete")
+	public ResultInfo delete(@RequestBody CommunicateParam param) {
+		communicateInfoService.removeByIds(Arrays.asList(param.getIds()));
+		return ResultInfoUtil.success();
 	}
 }
