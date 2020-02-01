@@ -8,6 +8,7 @@ import com.bigdata.coreweb.model.FlowPeopleParam;
 import com.bigdata.coreweb.service.IFlowpeopleService;
 import com.bigdata.coreweb.util.CopyUtils;
 import com.bigdata.coreweb.util.DateTimeUtil;
+import com.bigdata.coreweb.util.RedisUtil;
 import com.bigdata.coreweb.util.ResultInfoUtil;
 
 
@@ -32,6 +33,18 @@ public class FlowpeopleController {
     @Autowired
     private IFlowpeopleService flowpeopleService;
 
+    @Autowired
+    private RedisUtil redisUtil;
+
+    @GetMapping("/test")
+    public ResultInfo test(@RequestHeader("token") String token) {
+//        flowpeople.setId(UUIDUtil.uuid());
+//        Object token1 = redisUtil.get("token");
+        Object orgCode = redisUtil.hget(token, "orgCode");
+        Object userId = redisUtil.hget(token, "userId");
+        return null;
+    }
+
     /**
      * 添加数据
      *
@@ -39,8 +52,9 @@ public class FlowpeopleController {
      * @return
      */
     @PostMapping("/add")
-    public ResultInfo add(@RequestBody Flowpeople flowpeople) {
+    public ResultInfo add(@RequestBody Flowpeople flowpeople, @RequestHeader("token") String token) {
 //        flowpeople.setId(UUIDUtil.uuid());
+        Object token1 = redisUtil.get("token");
         flowpeople.setCreateTime(DateTimeUtil.nowLong());
         flowpeople.setUpdateTime(DateTimeUtil.nowLong());
         flowpeople.setCheckTime(DateTimeUtil.nowLong());
