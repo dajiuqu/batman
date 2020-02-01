@@ -1,11 +1,13 @@
 package com.bigdata.coreweb.entity;
 
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.akbigdata.coreweb.entity.BaseEntity;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+
+import java.io.Serializable;
 
 /**
  * <p>
@@ -16,12 +18,21 @@ import lombok.experimental.Accessors;
  * @since 2020-02-01
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("bat_flowpeople")
-public class Flowpeople extends BaseEntity {
+public class Flowpeople implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    @TableId("id")
+    private String id;
+
+    @TableField("update_Time")
+    private long updateTime;
+
+    @TableField("create_Time")
+    private long createTime;
 
     /**
      * 姓名
@@ -45,7 +56,7 @@ public class Flowpeople extends BaseEntity {
      * 检查时间
      */
     @TableField("check_time")
-    private String checkTime;
+    private long checkTime;
 
     /**
      * 来源地点
