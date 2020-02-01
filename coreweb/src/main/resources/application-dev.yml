@@ -32,7 +32,7 @@ mybatis-plus:
       id-type: uuid
       table-prefix: cat_
       table-underline: true
-  type-aliases-package: com.akbigdata.usercenter.entity
+  type-aliases-package: com.bigdata.coreweb.entity
   configuration:
     map-underscore-to-camel-case: true
 cms:
