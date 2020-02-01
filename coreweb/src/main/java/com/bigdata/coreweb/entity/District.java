@@ -6,6 +6,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * <p>
  * 
@@ -30,6 +33,12 @@ public class District extends BaseEntity {
 
     @TableField("sort")
     private Integer sort;
-
+    @TableField("parent_id")
+    private  String parentId;
+    @TableField(exist = false)
+    private List<District> children;
+    public District() {
+        this.children = new ArrayList<>();
+    }
 
 }

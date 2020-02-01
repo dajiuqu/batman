@@ -46,7 +46,7 @@ public class CodeGenerator {
         String author = "root";
         String mysqlUrl = "jdbc:mysql://localhost:3306/batman?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=CTT";
         String mysqlUser = "root";
-        String mysqlPasswd = "111111";
+        String mysqlPasswd = "123456";
         // 代码生成器
         AutoGenerator mpg = new AutoGenerator();
         // 全局配置

@@ -10,14 +10,11 @@ import com.bigdata.coreweb.entity.User;
 import com.bigdata.coreweb.service.IUserService;
 import com.bigdata.coreweb.util.MD5Util;
 import com.bigdata.coreweb.util.ResultInfoUtil;
-import com.bigdata.coreweb.vo.UseVo;
+import com.bigdata.coreweb.util.StringUtil;
+import com.bigdata.coreweb.vo.UserVo;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -73,7 +70,7 @@ public class UserController {
             user.setUpdateTime(System.currentTimeMillis());
             userService.updateById(user);
         }
-        return null;
+        return ResultInfoUtil.success();
     }
 
     @ApiOperation("用户删除")
@@ -88,11 +85,13 @@ public class UserController {
      * 按区划分页查询人员
      */
     @ApiOperation("查询顶级区划左边")
-    @PostMapping("/findPage")
-    public ResultInfo findPage( UseVo user) throws SystemException {
+    @GetMapping("/findPage")
+    public ResultInfo findPage( UserVo user) throws SystemException {
         QueryWrapper queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("district_code",user.getDistrictCode());
-        queryWrapper.like("name",user.getName());
+        if(!StringUtil.isNullOrEmpty(user.getName())) {
+            queryWrapper.like("name", user.getName());
+        }
         Page page = new Page();
         if (user.getCurrent()!=null){
             page.setCurrent(user.getCurrent());
@@ -100,7 +99,7 @@ public class UserController {
         if (user.getSize()!=null){
             page.setSize(user.getSize());
         }
-        userService.page(page,queryWrapper);
-        return ResultInfoUtil.success();
+        Page page1=userService.page(page,queryWrapper);
+        return ResultInfoUtil.success(page1);
     }
 }

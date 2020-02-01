@@ -9,14 +9,17 @@ import com.bigdata.coreweb.constant.ResultStatus;
 import com.bigdata.coreweb.entity.District;
 import com.bigdata.coreweb.service.IDistrictService;
 import com.bigdata.coreweb.util.ResultInfoUtil;
+import com.bigdata.coreweb.util.StringUtil;
 import com.bigdata.coreweb.vo.DistrictVo;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,7 +43,7 @@ public class DistrictController {
         queryWrapper.eq("name", district.getName());
         List<District> districtList = districtService.list(queryWrapper);
         QueryWrapper queryWrapper1 = new QueryWrapper<>();
-        queryWrapper.eq("code", district.getCode());
+        queryWrapper1.eq("code", district.getCode());
         List<District> districtList1 = districtService.list(queryWrapper1);
         if (districtList.size() > 0) {
             throw new SystemException(ResultStatus.DISTRICT_NAME_REPEAT);
@@ -111,6 +114,26 @@ public class DistrictController {
         }
         districtService.page(page,queryWrapper);
         return ResultInfoUtil.success();
+    }
+
+    /**
+     * 查询所有区划
+     */
+    @GetMapping ("/findAll")
+    public ResultInfo findAll(String code) throws SystemException {
+        List<District> districtList = districtService.list();
+        this.generateTree(null,new ArrayList<District>(),districtList);
+        return ResultInfoUtil.success(districtList);
+    }
+    private void generateTree(String parentId, List<District> parentContainer, List<District> all) {
+        for (District item : all) {
+            if (StringUtil.equals(item.getParentId(), parentId)) {
+                parentContainer.add(item);
+                item.setChildren(new ArrayList<>());
+                generateTree(item.getId(), item.getChildren(), all);
+            }
+        }
+
     }
 }
 

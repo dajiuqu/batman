@@ -44,6 +44,7 @@ public class ILoginServiceImpl  implements ILoginService {
                      queryWrapper.eq("code",user.getDistrictCode());
                      district= districtService.getOne(queryWrapper1);
                  }
+                 loginInfo.setUserId(user.getId());
                  loginInfo.setName(user.getName());
                  loginInfo.setAddress(user.getAddress());
                  loginInfo.setTelNumber(user.getTelNumber());
