@@ -7,13 +7,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bigdata.coreweb.common.ResultInfo;
+import com.bigdata.coreweb.constant.ResultStatus;
 import com.bigdata.coreweb.entity.CommunicateInfo;
+import com.bigdata.coreweb.exception.ContentException;
 import com.bigdata.coreweb.model.CommunicateParam;
+import com.bigdata.coreweb.model.LoginInfo;
 import com.bigdata.coreweb.service.ICommunicateInfoService;
 import com.bigdata.coreweb.util.RedisUtil;
 import com.bigdata.coreweb.util.ResultInfoUtil;
@@ -39,17 +43,18 @@ public class CommunicateInfoController {
 	 * 查询通信情况列表
 	 * @param page
 	 * @return
+	 * @throws ContentException 
 	 */
 	@GetMapping("/list")
-	public ResultInfo list(Page page, CommunicateParam param) {
-		param.setCode(redisUtil.get("uuid").toString());
+	public ResultInfo list(Page page, CommunicateParam param, @RequestHeader String token) throws ContentException {
+		param.setCode(getCode(token));
 		Page data = communicateInfoService.list(param, page);
 		return ResultInfoUtil.success(data);
 	}
 	
 	@GetMapping("/listByPhone")
-	public ResultInfo listByPhone(Page page, CommunicateParam param) {
-		param.setCode(redisUtil.get("uuid").toString());
+	public ResultInfo listByPhone(Page page, CommunicateParam param, @RequestHeader String token) throws ContentException {
+		param.setCode(getCode(token));
 		Page data = communicateInfoService.listByPhone(param, page);
 		return ResultInfoUtil.success(data);
 	}
@@ -85,5 +90,14 @@ public class CommunicateInfoController {
 	public ResultInfo delete(@RequestBody CommunicateParam param) {
 		communicateInfoService.removeByIds(Arrays.asList(param.getIds()));
 		return ResultInfoUtil.success();
+	}
+	
+	private String getCode(String token) throws ContentException {
+		Object obj = redisUtil.get(token);
+		if (obj == null) {
+			throw new ContentException(ResultStatus.TOKEN_IS_VVALID);
+		}
+		LoginInfo user = (LoginInfo)obj;
+		return user.getDistrictCode();
 	}
 }
