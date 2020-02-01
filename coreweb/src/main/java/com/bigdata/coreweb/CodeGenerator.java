@@ -40,20 +40,20 @@ public class CodeGenerator {
 
     public static void main(String[] args) {
         //包路径
-        String basePackage = "com.akbigdata.usercenter";
+        String basePackage = "com.bigdata.coreweb";
         //去掉表前缀
-        String tablePre = "uc_";
-        String author = "gmj";
-        String mysqlUrl = "jdbc:mysql://localhost:3306/akbrain?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=CTT";
+        String tablePre = "bat_";
+        String author = "root";
+        String mysqlUrl = "jdbc:mysql://localhost:3306/batman?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=CTT";
         String mysqlUser = "root";
-        String mysqlPasswd = "123456";
+        String mysqlPasswd = "111111";
         // 代码生成器
         AutoGenerator mpg = new AutoGenerator();
         // 全局配置
         GlobalConfig gc = new GlobalConfig();
         //是否覆盖原有文件，默认不覆盖
 //        gc.setFileOverride(true);
-        String moduleName = "/usercenter";
+        String moduleName = "/coreweb";
         String projectPath = System.getProperty("user.dir") + moduleName;
 
         gc.setOutputDir(projectPath + "/src/main/java");
@@ -130,7 +130,7 @@ public class CodeGenerator {
         StrategyConfig strategy = new StrategyConfig();
         strategy.setNaming(NamingStrategy.underline_to_camel);
         strategy.setColumnNaming(NamingStrategy.underline_to_camel);
-        strategy.setSuperEntityClass("com.akbigdata.usercenter.entity.BaseEntity");
+        strategy.setSuperEntityClass("com.akbigdata.coreweb.entity.BaseEntity");
         strategy.setEntityLombokModel(true);
         strategy.setRestControllerStyle(true);
         strategy.setEntityTableFieldAnnotationEnable(true);
