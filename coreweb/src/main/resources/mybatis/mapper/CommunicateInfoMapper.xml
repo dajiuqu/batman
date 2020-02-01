@@ -1,5 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.bigdata.coreweb.mapper.CommunicateInfoMapper">
-
+	<select id="list" parameterType="com.bigdata.coreweb.model.CommunicateParam" resultType="map">
+		SELECT a.*,IF(b.phone = NULL, 0, 1) AS STATUS FROM (
+		SELECT sj,gsd,lx,dfds FROM sjhm WHERE xzdm LIKE concat(#{param.code},'%') 
+		<if test="param.phone != null and param.phone != ''">
+		and sj LIKE CONCAT('%',#{param.phone},'%') 
+		</if>
+		GROUP BY sj) a
+		LEFT JOIN (SELECT phone FROM troubleshoot_info GROUP BY phone) b ON a.sj = b.phone
+	</select>
+	<select id="listByPhone" parameterType="com.bigdata.coreweb.model.CommunicateParam" resultType="map">
+		SELECT 
+			* 
+		FROM 
+			sjhm 
+		WHERE 
+			sj = #{param.phone} 
+			and xzdm LIKE concat(#{param.code},'%') 
+		GROUP BY DATE,jzbs
+	</select>
 </mapper>

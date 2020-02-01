@@ -15,6 +15,7 @@ import com.bigdata.coreweb.common.ResultInfo;
 import com.bigdata.coreweb.entity.CommunicateInfo;
 import com.bigdata.coreweb.model.CommunicateParam;
 import com.bigdata.coreweb.service.ICommunicateInfoService;
+import com.bigdata.coreweb.util.RedisUtil;
 import com.bigdata.coreweb.util.ResultInfoUtil;
 
 /**
@@ -28,6 +29,8 @@ import com.bigdata.coreweb.util.ResultInfoUtil;
 @RestController
 @RequestMapping("/communicateInfo")
 public class CommunicateInfoController {
+	@Autowired
+	private RedisUtil redisUtil;
 	
 	@Autowired
 	private ICommunicateInfoService communicateInfoService;
@@ -39,7 +42,15 @@ public class CommunicateInfoController {
 	 */
 	@GetMapping("/list")
 	public ResultInfo list(Page page, CommunicateParam param) {
-		Page data = communicateInfoService.page(page, param.buildQuery());
+		param.setCode(redisUtil.get("uuid").toString());
+		Page data = communicateInfoService.list(param, page);
+		return ResultInfoUtil.success(data);
+	}
+	
+	@GetMapping("/listByPhone")
+	public ResultInfo listByPhone(Page page, CommunicateParam param) {
+		param.setCode(redisUtil.get("uuid").toString());
+		Page data = communicateInfoService.listByPhone(param, page);
 		return ResultInfoUtil.success(data);
 	}
 	
