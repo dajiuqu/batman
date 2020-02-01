@@ -41,7 +41,7 @@ public class ILoginServiceImpl  implements ILoginService {
                  String token = UUID.randomUUID().toString();
                  if (!StringUtil.isNullOrEmpty(user.getDistrictCode())){
                      QueryWrapper queryWrapper1=new QueryWrapper<>();
-                     queryWrapper.eq("code",user.getDistrictCode());
+                     queryWrapper1.eq("code",user.getDistrictCode());
                      district= districtService.getOne(queryWrapper1);
                  }
                  loginInfo.setUserId(user.getId());

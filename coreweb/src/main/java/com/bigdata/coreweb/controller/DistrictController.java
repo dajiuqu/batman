@@ -2,6 +2,7 @@ package com.bigdata.coreweb.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bigdata.coreweb.common.ResultInfo;
 import com.bigdata.coreweb.common.SystemException;
@@ -13,11 +14,7 @@ import com.bigdata.coreweb.util.StringUtil;
 import com.bigdata.coreweb.vo.DistrictVo;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,7 +75,7 @@ public class DistrictController {
     }
 
     @ApiOperation("区划删除")
-    @PostMapping("/delete")
+    @DeleteMapping("/delete")
     public ResultInfo delete(String[] ids) throws SystemException {
         for (String id : ids) {
             districtService.removeById(id);
@@ -103,8 +100,12 @@ public class DistrictController {
     @PostMapping("/findPage")
     public ResultInfo findPage(DistrictVo district) throws SystemException {
         QueryWrapper queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("parent_id",district.getCode());
-        queryWrapper.like("name",district.getName());
+        if(!StringUtil.isNullOrEmpty(district.getCode())){
+            queryWrapper.eq("parent_id",district.getCode());
+        }
+        if(!StringUtil.isNullOrEmpty(district.getName())){
+            queryWrapper.like("name",district.getName());
+        }
         Page page = new Page();
         if (district.getCurrent()!=null){
             page.setCurrent(district.getCurrent());
@@ -112,18 +113,19 @@ public class DistrictController {
         if (district.getSize()!=null){
             page.setSize(district.getSize());
         }
-        districtService.page(page,queryWrapper);
-        return ResultInfoUtil.success();
+        IPage page1=districtService.page(page,queryWrapper);
+        return ResultInfoUtil.success(page1);
     }
 
     /**
      * 查询所有区划
      */
-    @GetMapping ("/findAll")
-    public ResultInfo findAll(String code) throws SystemException {
+    @GetMapping ("/findTree")
+    public ResultInfo findTree() throws SystemException {
         List<District> districtList = districtService.list();
-        this.generateTree(null,new ArrayList<District>(),districtList);
-        return ResultInfoUtil.success(districtList);
+        ArrayList<District> parentContainer= new ArrayList<District>();
+        this.generateTree(null,parentContainer,districtList);
+        return ResultInfoUtil.success(parentContainer);
     }
     private void generateTree(String parentId, List<District> parentContainer, List<District> all) {
         for (District item : all) {

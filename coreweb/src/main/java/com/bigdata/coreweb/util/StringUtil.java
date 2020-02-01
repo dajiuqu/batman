@@ -9,6 +9,9 @@ public class StringUtil {
         if(!isNullOrEmpty(str1)&&str1.equals(str2)) {
             return true;
         }
+        if(isNullOrEmpty(str1)&&isNullOrEmpty(str2)){
+            return true;
+        }
         return false;
     }
 }
