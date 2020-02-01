@@ -53,7 +53,7 @@ public class FlowpeopleController {
      * @throws ContentException
      */
     @GetMapping("/userCheckAddress")
-    public ResultInfo userinfo(@RequestHeader("token") String token) throws ContentException {
+    public ResultInfo userinfo(@RequestHeader String token) throws ContentException {
 //        flowpeople.setId(UUIDUtil.uuid());
 //        Object token1 = redisUtil.get("token");
         LoginInfo code = getCode(token);
@@ -73,7 +73,7 @@ public class FlowpeopleController {
      * @throws ContentException
      */
     @PostMapping("/userBindCheckAddress")
-    public ResultInfo userBindCheckAddress(@RequestBody Flowpeople flowpeople, @RequestHeader("token") String token) throws ContentException {
+    public ResultInfo userBindCheckAddress(@RequestBody Flowpeople flowpeople, @RequestHeader String token) throws ContentException {
 //        flowpeople.setId(UUIDUtil.uuid());
 //        Object token1 = redisUtil.get("token");
         LoginInfo code = getCode(token);
@@ -92,10 +92,10 @@ public class FlowpeopleController {
      * @return
      */
     @PostMapping("/add")
-    public ResultInfo add(@RequestBody Flowpeople flowpeople, @RequestHeader("token") String token) throws ContentException {
+    public ResultInfo add(@RequestBody Flowpeople flowpeople, @RequestHeader String token) throws ContentException {
         LoginInfo user = getCode(token);
-        User user1 = userService.getById(user.getUserId());
-        flowpeople.setCheckAddress(user1.getAddress());
+//        User user1 = userService.getById(user.getUserId());
+//        flowpeople.setCheckAddress(user1.getAddress());
         flowpeople.setAccountId(user.getUserId());
         flowpeople.setOrganizationId(user.getDistrictCode());
         flowpeople.setCreateTime(DateTimeUtil.nowLong());
@@ -113,8 +113,10 @@ public class FlowpeopleController {
      * @return
      */
     @GetMapping("/list")
-    public ResultInfo list(FlowPeopleParam flowPeopleParam, Page page) {
+    public ResultInfo list(FlowPeopleParam flowPeopleParam, @RequestHeader String token, Page page) throws ContentException {
 //        flowpeople.setId(UUIDUtil.uuid());
+        LoginInfo user = getCode(token);
+        flowPeopleParam.setAccountId(user.getUserId());
         LambdaQueryChainWrapper<Flowpeople> flowpeopleLambdaQueryChainWrapper = flowpeopleService.lambdaQuery();
         flowPeopleParam.buildQuery(flowpeopleLambdaQueryChainWrapper);
         Page<Flowpeople> page1 = flowpeopleLambdaQueryChainWrapper.page(page);
@@ -158,7 +160,7 @@ public class FlowpeopleController {
      * @return
      */
     @PostMapping("/update")
-    public ResultInfo update(@RequestBody Flowpeople flowpeople, @RequestHeader("token") String token) throws ContentException {
+    public ResultInfo update(@RequestBody Flowpeople flowpeople, @RequestHeader String token) throws ContentException {
         LoginInfo user = getCode(token);
         flowpeople.setAccountId(user.getUserId());
         flowpeople.setOrganizationId(user.getDistrictCode());
