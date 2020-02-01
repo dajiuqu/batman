@@ -1,11 +1,17 @@
 package com.bigdata.coreweb.controller;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bigdata.coreweb.common.ResultInfo;
+import com.bigdata.coreweb.constant.ResultStatus;
 import com.bigdata.coreweb.entity.Flowpeople;
+import com.bigdata.coreweb.entity.User;
+import com.bigdata.coreweb.exception.ContentException;
 import com.bigdata.coreweb.model.FlowPeopleParam;
+import com.bigdata.coreweb.model.LoginInfo;
 import com.bigdata.coreweb.service.IFlowpeopleService;
+import com.bigdata.coreweb.service.IUserService;
 import com.bigdata.coreweb.util.CopyUtils;
 import com.bigdata.coreweb.util.DateTimeUtil;
 import com.bigdata.coreweb.util.RedisUtil;
@@ -34,15 +40,49 @@ public class FlowpeopleController {
     private IFlowpeopleService flowpeopleService;
 
     @Autowired
+    private IUserService userService;
+
+    @Autowired
     private RedisUtil redisUtil;
 
-    @GetMapping("/test")
-    public ResultInfo test(@RequestHeader("token") String token) {
+    /**
+     * h5获取用户捎点信息
+     *
+     * @param token
+     * @return
+     * @throws ContentException
+     */
+    @GetMapping("/userCheckAddress")
+    public ResultInfo userinfo(@RequestHeader("token") String token) throws ContentException {
 //        flowpeople.setId(UUIDUtil.uuid());
 //        Object token1 = redisUtil.get("token");
-        Object orgCode = redisUtil.hget(token, "orgCode");
-        Object userId = redisUtil.hget(token, "userId");
-        return null;
+        LoginInfo code = getCode(token);
+        String userId = code.getUserId();
+//        String districtCode = code.getDistrictCode();
+        User user = userService.getById(code.getUserId());
+        user.setPassword(null);
+        user.setSalt(null);
+        return ResultInfoUtil.success(user.getAddress());
+    }
+
+    /**
+     * 给用户设置捎点地址信息
+     *
+     * @param token
+     * @return
+     * @throws ContentException
+     */
+    @PostMapping("/userBindCheckAddress")
+    public ResultInfo userBindCheckAddress(@RequestBody Flowpeople flowpeople, @RequestHeader("token") String token) throws ContentException {
+//        flowpeople.setId(UUIDUtil.uuid());
+//        Object token1 = redisUtil.get("token");
+        LoginInfo code = getCode(token);
+        User user = userService.getById(code.getUserId());
+        if (StrUtil.isNotEmpty(flowpeople.getCheckAddress())) {
+            user.setAddress(flowpeople.getCheckAddress());
+            userService.updateById(user);
+        }
+        return ResultInfoUtil.success(user);
     }
 
     /**
@@ -52,9 +92,12 @@ public class FlowpeopleController {
      * @return
      */
     @PostMapping("/add")
-    public ResultInfo add(@RequestBody Flowpeople flowpeople, @RequestHeader("token") String token) {
-//        flowpeople.setId(UUIDUtil.uuid());
-        Object token1 = redisUtil.get("token");
+    public ResultInfo add(@RequestBody Flowpeople flowpeople, @RequestHeader("token") String token) throws ContentException {
+        LoginInfo user = getCode(token);
+        User user1 = userService.getById(user.getUserId());
+        flowpeople.setCheckAddress(user1.getAddress());
+        flowpeople.setAccountId(user.getUserId());
+        flowpeople.setOrganizationId(user.getDistrictCode());
         flowpeople.setCreateTime(DateTimeUtil.nowLong());
         flowpeople.setUpdateTime(DateTimeUtil.nowLong());
         flowpeople.setCheckTime(DateTimeUtil.nowLong());
@@ -115,7 +158,12 @@ public class FlowpeopleController {
      * @return
      */
     @PostMapping("/update")
-    public ResultInfo update(@RequestBody Flowpeople flowpeople) {
+    public ResultInfo update(@RequestBody Flowpeople flowpeople, @RequestHeader("token") String token) throws ContentException {
+        LoginInfo user = getCode(token);
+        flowpeople.setAccountId(user.getUserId());
+        flowpeople.setOrganizationId(user.getDistrictCode());
+        User user1 = userService.getById(user.getUserId());
+        flowpeople.setCheckAddress(user1.getAddress());
         Flowpeople before = flowpeopleService.getById(flowpeople.getId());
         before.setCheckTime(DateTimeUtil.nowLong());
         before.setUpdateTime(DateTimeUtil.nowLong());
@@ -135,6 +183,15 @@ public class FlowpeopleController {
     public ResultInfo delete(@RequestBody String[] ids) {
         flowpeopleService.removeByIds(Arrays.asList(ids));
         return ResultInfoUtil.success();
+    }
+
+    private LoginInfo getCode(String token) throws ContentException {
+        Object obj = redisUtil.get(token);
+        if (obj == null) {
+            throw new ContentException(ResultStatus.TOKEN_IS_VVALID);
+        }
+        LoginInfo user = (LoginInfo) obj;
+        return user;
     }
 
 

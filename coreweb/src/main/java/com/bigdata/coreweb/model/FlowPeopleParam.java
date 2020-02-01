@@ -43,10 +43,10 @@ public class FlowPeopleParam implements Serializable {
 //    private long checkTime;
 
     public void buildQuery(LambdaQueryChainWrapper<Flowpeople> query) {
-        if (startDate != null) {
+        if (StrUtil.isNotEmpty(startDate)) {
             query.ge(Flowpeople::getCheckTime, this.getDataLong(startDate));
         }
-        if (endDate != null) {
+        if (StrUtil.isNotEmpty(endDate)) {
             query.le(Flowpeople::getCheckTime, this.getDataLong(endDate));
         }
         if (isFever != null) {
