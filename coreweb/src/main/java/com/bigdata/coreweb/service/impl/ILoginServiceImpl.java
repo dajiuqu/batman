@@ -53,14 +53,13 @@ public class ILoginServiceImpl  implements ILoginService {
                  loginInfo.setToken(token);
                  redisUtil.set(token, loginInfo, 3000);
                  }else {
-                 new SystemException(ResultStatus.PASSWORD_ERROR);
+                throw  new SystemException(ResultStatus.PASSWORD_ERROR);
              }
-             return loginInfo;
-         }else {
-             new SystemException(ResultStatus.USER_NOT_EXIST);
-             return null;
-         }
 
+         }else {
+             throw new SystemException(ResultStatus.USER_NOT_EXIST);
+         }
+        return loginInfo;
     }
 
     @Override

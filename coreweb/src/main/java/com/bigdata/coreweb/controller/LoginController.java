@@ -1,6 +1,7 @@
 package com.bigdata.coreweb.controller;
 
 import com.bigdata.coreweb.common.ResultInfo;
+import com.bigdata.coreweb.common.SystemException;
 import com.bigdata.coreweb.constant.ResultStatus;
 import com.bigdata.coreweb.util.ResultInfoUtil;
 import com.bigdata.coreweb.model.LoginInfo;
@@ -32,7 +33,7 @@ public class LoginController {
      */
     @ApiOperation("用户登录")
     @PostMapping("/in")
-    public ResultInfo login(@RequestBody LoginUser user) {
+    public ResultInfo login(@RequestBody LoginUser user)throws SystemException {
         LoginInfo loginInfo = loginService.login(user);
         if (loginInfo != null) {
             return ResultInfoUtil.success(loginInfo);
@@ -43,7 +44,7 @@ public class LoginController {
    /**
      * 退出登录
      *
-     * @param token
+     * @param
      * @return
      */
     @ApiOperation("用户退出")
