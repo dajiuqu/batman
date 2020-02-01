@@ -6,10 +6,16 @@ import com.bigdata.coreweb.common.ResultInfo;
 import com.bigdata.coreweb.entity.Flowpeople;
 import com.bigdata.coreweb.model.FlowPeopleParam;
 import com.bigdata.coreweb.service.IFlowpeopleService;
+import com.bigdata.coreweb.util.CopyUtils;
 import com.bigdata.coreweb.util.DateTimeUtil;
 import com.bigdata.coreweb.util.ResultInfoUtil;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
+import java.util.HashSet;
 
 /**
  * <p>
@@ -26,6 +32,12 @@ public class FlowpeopleController {
     @Autowired
     private IFlowpeopleService flowpeopleService;
 
+    /**
+     * 添加数据
+     *
+     * @param flowpeople
+     * @return
+     */
     @PostMapping("/add")
     public ResultInfo add(@RequestBody Flowpeople flowpeople) {
 //        flowpeople.setId(UUIDUtil.uuid());
@@ -67,5 +79,49 @@ public class FlowpeopleController {
         Page<Flowpeople> page1 = flowpeopleLambdaQueryChainWrapper.page(page);
         return ResultInfoUtil.success(page1);
     }
+
+    /**
+     * 查询单个接口
+     *
+     * @param flowPeopleParam
+     * @param page
+     * @return
+     */
+    @GetMapping("/findById")
+    public ResultInfo findById(String id) {
+        Flowpeople byId = flowpeopleService.getById(id);
+        return ResultInfoUtil.success(byId);
+    }
+
+    /**
+     * 修改记录
+     *
+     * @param flowPeopleParam
+     * @param page
+     * @return
+     */
+    @PostMapping("/update")
+    public ResultInfo update(@RequestBody Flowpeople flowpeople) {
+        Flowpeople before = flowpeopleService.getById(flowpeople.getId());
+        before.setCheckTime(DateTimeUtil.nowLong());
+        before.setUpdateTime(DateTimeUtil.nowLong());
+        CopyUtils.copyProperties(flowpeople, before);
+        flowpeopleService.updateById(before);
+        return ResultInfoUtil.success(before);
+    }
+
+    /**
+     * 批量删除
+     *
+     * @param flowPeopleParam
+     * @param page
+     * @return
+     */
+    @PostMapping("/delete")
+    public ResultInfo delete(@RequestBody String[] ids) {
+        flowpeopleService.removeByIds(Arrays.asList(ids));
+        return ResultInfoUtil.success();
+    }
+
 
 }
