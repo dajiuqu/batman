@@ -1,5 +1,4 @@
 package com.bigdata.coreweb.entity;
-
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -45,6 +44,11 @@ public class Flowpeople implements Serializable {
      */
     @TableField("idcard")
     private String idcard;
+    /**
+     * 手机号
+     */
+    @TableField("telephone")
+    private String telephone;
 
     /**
      * 车牌
@@ -113,4 +117,15 @@ public class Flowpeople implements Serializable {
     private String other;
 
 
+    /**
+     * 录入数据账号
+     */
+    @TableField("account_id")
+    private String accountId;
+
+    /**
+     * 录入数据账号所属组织
+     */
+    @TableField("organization_id")
+    private String organizationId;
 }
