@@ -1,7 +1,10 @@
 package com.bigdata.coreweb.controller;
 
+import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bigdata.coreweb.common.ResultInfo;
 import com.bigdata.coreweb.entity.Flowpeople;
+import com.bigdata.coreweb.model.FlowPeopleParam;
 import com.bigdata.coreweb.service.IFlowpeopleService;
 import com.bigdata.coreweb.util.DateTimeUtil;
 import com.bigdata.coreweb.util.ResultInfoUtil;
@@ -33,14 +36,36 @@ public class FlowpeopleController {
         return ResultInfoUtil.success(flowpeople);
     }
 
+    /**
+     * h5分页条件查询
+     *
+     * @param flowPeopleParam
+     * @param page
+     * @return
+     */
     @GetMapping("/list")
-    public ResultInfo list(@RequestBody Flowpeople flowpeople) {
+    public ResultInfo list(FlowPeopleParam flowPeopleParam, Page page) {
 //        flowpeople.setId(UUIDUtil.uuid());
-        flowpeople.setCreateTime(DateTimeUtil.nowLong());
-        flowpeople.setUpdateTime(DateTimeUtil.nowLong());
-        flowpeople.setCheckTime(DateTimeUtil.nowLong());
-        boolean save = flowpeopleService.save(flowpeople);
-        return ResultInfoUtil.success(flowpeople);
+        LambdaQueryChainWrapper<Flowpeople> flowpeopleLambdaQueryChainWrapper = flowpeopleService.lambdaQuery();
+        flowPeopleParam.buildQuery(flowpeopleLambdaQueryChainWrapper);
+        Page<Flowpeople> page1 = flowpeopleLambdaQueryChainWrapper.page(page);
+        return ResultInfoUtil.success(page1);
+    }
+
+    /**
+     * 后台分页条件查询
+     *
+     * @param flowPeopleParam
+     * @param page
+     * @return
+     */
+    @GetMapping("/listback")
+    public ResultInfo listback(FlowPeopleParam flowPeopleParam, Page page) {
+//        flowpeople.setId(UUIDUtil.uuid());
+        LambdaQueryChainWrapper<Flowpeople> flowpeopleLambdaQueryChainWrapper = flowpeopleService.lambdaQuery();
+        flowPeopleParam.buildQuery(flowpeopleLambdaQueryChainWrapper);
+        Page<Flowpeople> page1 = flowpeopleLambdaQueryChainWrapper.page(page);
+        return ResultInfoUtil.success(page1);
     }
 
 }

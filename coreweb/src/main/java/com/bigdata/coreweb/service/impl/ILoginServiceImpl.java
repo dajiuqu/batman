@@ -51,7 +51,7 @@ public class ILoginServiceImpl  implements ILoginService {
                  loginInfo.setDistrictCode(user.getDistrictCode());
                  loginInfo.setDistrictName(district.getName());
                  loginInfo.setToken(token);
-                 redisUtil.set(token, loginInfo, 300);
+                 redisUtil.set(token, loginInfo, 3000);
                  }else {
                  new SystemException(ResultStatus.PASSWORD_ERROR);
              }
