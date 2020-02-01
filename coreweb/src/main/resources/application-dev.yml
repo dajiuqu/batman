@@ -1,8 +1,8 @@
 server:
   port: 8080
 spring:
-  application:
-    name: aklung
+#  application:
+#    name: aklung
   datasource:
     username: root
     password: cws@123
