@@ -68,9 +68,9 @@
 			</if>
 	</select>
 	
-	<select id="exportListData" parameterType="com.bigdata.coreweb.model.CommunicateParam" resultType="map">
+	<select id="exportListData" parameterType="com.bigdata.coreweb.model.CommunicateParam" resultType="com.bigdata.coreweb.model.ExportListData">
 		SELECT 
-			a.*,COUNT(1) as days,IF(b.phone is NULL, 0, 1) AS status
+			a.*,COUNT(1) as days,IF(b.phone is NULL, '未排查', '已排查') AS status
 		from 
 			(
 				SELECT 

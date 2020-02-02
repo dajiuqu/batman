@@ -4,7 +4,6 @@ package com.bigdata.coreweb.controller;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -24,12 +23,15 @@ import com.bigdata.coreweb.constant.ResultStatus;
 import com.bigdata.coreweb.entity.CommunicateInfo;
 import com.bigdata.coreweb.exception.ContentException;
 import com.bigdata.coreweb.model.CommunicateParam;
+import com.bigdata.coreweb.model.ExportListData;
 import com.bigdata.coreweb.model.LoginInfo;
 import com.bigdata.coreweb.model.StatisticsData;
 import com.bigdata.coreweb.service.ICommunicateInfoService;
 import com.bigdata.coreweb.util.RedisUtil;
 import com.bigdata.coreweb.util.ResultInfoUtil;
 
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.io.IORuntimeException;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 
@@ -85,9 +87,10 @@ public class CommunicateInfoController {
 		return ResultInfoUtil.success(data);
 	}
 	
-	@GetMapping("/exportListDataq")
-	public void exportListDataq(CommunicateParam param, HttpServletResponse response) throws IOException {
-		List<Map<String, Object>> data = communicateInfoService.exportListData(param);
+	@GetMapping("/exportListData")
+	public void exportListDataq(CommunicateParam param, HttpServletResponse response, @RequestHeader String token) throws IOException, ContentException {
+		param.setCode(getCode(token));
+		List<ExportListData> data = communicateInfoService.exportListData(param);
 		ExcelWriter writer = ExcelUtil.getWriter();
 		writer.addHeaderAlias("sj", "手机号码");
 		writer.addHeaderAlias("gsd", "归属地");
@@ -102,9 +105,29 @@ public class CommunicateInfoController {
 		writer.addHeaderAlias("dz", "基站地址");
 		writer.addHeaderAlias("date", "最后通信日期");
 		writer.addHeaderAlias("status", "是否排查");
-		writer.write(data);
+		int size = data.size();
+		int len = 60000;
+		if (size < len) {
+			writer.write(data);
+		} else {
+			int n;
+			if (size % len == 0) {
+				n = size / len;
+			} else {
+				n = size / len + 1;
+			}
+			for (int i = 0; i < n; i++) {
+				if (i == 0) {
+					writer.write(data.subList(i*len, (i+1)*len));
+				} else if (i == n - 1) {
+					writer.setSheet("sheet"+(i+1)).write(data.subList(i*len, size));
+				} else {
+					writer.setSheet("sheet"+(i+1)).write(data.subList(i*len, (i+1)*len));
+				}
+			}
+		}
 		response.setContentType("application/vnd.ms-excel;charset=utf-8"); 
-		response.setHeader("Content-Disposition","attachment;filename=test.xls"); 
+		response.setHeader("Content-Disposition","attachment;filename=phone_info_"+DateUtil.today()+".xls"); 
 		ServletOutputStream out = response.getOutputStream(); 
 		writer.flush(out);
 		writer.close();
@@ -116,7 +139,7 @@ public class CommunicateInfoController {
 		List<StatisticsData> data = communicateInfoService.statisticsData(param);
 		return ResultInfoUtil.success(data);
 	}
-	
+
 	/**
 	 * 新增通信情况
 	 * @param communicateInfo
