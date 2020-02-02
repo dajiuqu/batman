@@ -31,4 +31,10 @@ public class CommunicateInfoServiceImpl extends ServiceImpl<CommunicateInfoMappe
 		page.setRecords(getBaseMapper().listByPhone(param, page));
 		return page;
 	}
+
+	@Override
+	public Page listData(CommunicateParam param, Page page) {
+		page.setRecords(getBaseMapper().listData(param, page));
+		return page;
+	}
 }

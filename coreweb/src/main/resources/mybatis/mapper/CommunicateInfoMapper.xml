@@ -2,13 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.bigdata.coreweb.mapper.CommunicateInfoMapper">
 	<select id="list" parameterType="com.bigdata.coreweb.model.CommunicateParam" resultType="map">
-		SELECT a.*,IF(b.phone = NULL, 0, 1) AS STATUS FROM (
+		SELECT a.*,IF(b.phone is NULL, 0, 1) AS STATUS FROM (
 		SELECT sj,gsd,lx,dfds FROM sjhm WHERE xzdm LIKE concat(#{param.code},'%') 
 		<if test="param.phone != null and param.phone != ''">
 		and sj LIKE CONCAT('%',#{param.phone},'%') 
 		</if>
 		GROUP BY sj) a
-		LEFT JOIN (SELECT phone FROM troubleshoot_info GROUP BY phone) b ON a.sj = b.phone
+		LEFT JOIN (SELECT phone FROM troubleshoot_info where phone_status = 0 GROUP BY phone) b ON a.sj = b.phone
 	</select>
 	<select id="listByPhone" parameterType="com.bigdata.coreweb.model.CommunicateParam" resultType="map">
 		SELECT 
@@ -19,5 +19,52 @@
 			sj = #{param.phone} 
 			and xzdm LIKE concat(#{param.code},'%') 
 		GROUP BY DATE,jzbs
+	</select>
+	<select id="listData" parameterType="com.bigdata.coreweb.model.CommunicateParam" resultType="map">
+		SELECT 
+			a.*,COUNT(1) as days,IF(b.phone is NULL, 0, 1) AS status
+		from 
+			(
+				SELECT 
+					sj,gsd,gsd1,lx,dfds,dfxq,jzmc,lksj,max(date) as date,yys,jzbs,xzmc,dz
+				FROM 
+					sjhm 
+				WHERE 
+					xzdm LIKE concat(#{param.code},'%') 
+					<if test="param.county != null and param.county != ''">
+						and dfxq = #{param.county}
+					</if>
+					<if test="param.township != null and param.township != ''">
+						and xzmc = #{param.township}
+					</if>
+					<if test="param.radio == 1">
+						and xzmc is null
+					</if>
+					<if test="param.startDate != null">
+						and date <![CDATA[ >= ]]> #{param.startDate}
+					</if>
+					<if test="param.endDate != null">
+						and dfxq <![CDATA[ <= ]]> #{param.endDate}
+					</if>
+				GROUP BY sj,dfxq,xzmc,DATE
+			) a 
+			LEFT JOIN 
+			(
+				SELECT 
+					phone 
+				FROM 
+					troubleshoot_info 
+				WHERE 
+					phone_status = 0 
+				GROUP BY phone
+			) b 
+			ON a.sj = b.phone
+			<if test="param.status != null">
+				WHERE IF(b.phone IS NULL, 0, 1)=#{param.status}
+			</if>
+			GROUP BY sj,dfxq,xzmc 
+			<if test="param.count != null">
+			 HAVING COUNT(1) > #{param.count}
+			</if>
 	</select>
 </mapper>

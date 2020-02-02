@@ -19,4 +19,5 @@ import com.bigdata.coreweb.model.CommunicateParam;
 public interface CommunicateInfoMapper extends BaseMapper<CommunicateInfo> {
 	List<Map<String, Object>> list(CommunicateParam param, Page page);
 	List<Map<String, Object>> listByPhone(CommunicateParam param, Page page);
+	List<Map<String, Object>> listData(CommunicateParam param, Page page);
 }

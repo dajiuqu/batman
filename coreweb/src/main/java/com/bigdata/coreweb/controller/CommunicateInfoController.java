@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bigdata.coreweb.common.ResultInfo;
+import com.bigdata.coreweb.common.SystemException;
 import com.bigdata.coreweb.constant.ResultStatus;
 import com.bigdata.coreweb.entity.CommunicateInfo;
 import com.bigdata.coreweb.exception.ContentException;
@@ -60,6 +61,21 @@ public class CommunicateInfoController {
 	}
 	
 	/**
+	 * 查询人员列表
+	 * @param page
+	 * @param param
+	 * @param token
+	 * @return
+	 * @throws ContentException
+	 */
+	@GetMapping("/listData")
+	public ResultInfo listData(Page page, CommunicateParam param, @RequestHeader String token) throws ContentException {
+		param.setCode(getCode(token));
+		Page data = communicateInfoService.listData(param, page);
+		return ResultInfoUtil.success(data);
+	}
+	
+	/**
 	 * 新增通信情况
 	 * @param communicateInfo
 	 * @return
@@ -95,7 +111,7 @@ public class CommunicateInfoController {
 	private String getCode(String token) throws ContentException {
 		Object obj = redisUtil.get(token);
 		if (obj == null) {
-			throw new ContentException(ResultStatus.TOKEN_IS_VVALID);
+			throw new SystemException(ResultStatus.TOKEN_IS_VVALID);
 		}
 		LoginInfo user = (LoginInfo)obj;
 		return user.getDistrictCode();

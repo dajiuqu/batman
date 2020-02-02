@@ -11,4 +11,9 @@ public class CommunicateParam implements Serializable {
 	private String phone;
 	private String code;
 	private Long[] ids;
+	private String county;
+	private String township;
+	private Integer count;
+	private Integer status;
+	private int radio;
 }

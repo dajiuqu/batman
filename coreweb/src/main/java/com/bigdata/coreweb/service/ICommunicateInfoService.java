@@ -16,4 +16,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface ICommunicateInfoService extends IService<CommunicateInfo> {
 	Page list(CommunicateParam param, Page page);
 	Page listByPhone(CommunicateParam param, Page page);
+	Page listData(CommunicateParam param, Page page);
 }
