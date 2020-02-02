@@ -1,7 +1,13 @@
 package com.bigdata.coreweb.controller;
 
 
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,9 +25,13 @@ import com.bigdata.coreweb.entity.CommunicateInfo;
 import com.bigdata.coreweb.exception.ContentException;
 import com.bigdata.coreweb.model.CommunicateParam;
 import com.bigdata.coreweb.model.LoginInfo;
+import com.bigdata.coreweb.model.StatisticsData;
 import com.bigdata.coreweb.service.ICommunicateInfoService;
 import com.bigdata.coreweb.util.RedisUtil;
 import com.bigdata.coreweb.util.ResultInfoUtil;
+
+import cn.hutool.poi.excel.ExcelUtil;
+import cn.hutool.poi.excel.ExcelWriter;
 
 /**
  * <p>
@@ -72,6 +82,38 @@ public class CommunicateInfoController {
 	public ResultInfo listData(Page page, CommunicateParam param, @RequestHeader String token) throws ContentException {
 		param.setCode(getCode(token));
 		Page data = communicateInfoService.listData(param, page);
+		return ResultInfoUtil.success(data);
+	}
+	
+	@GetMapping("/exportListDataq")
+	public void exportListDataq(CommunicateParam param, HttpServletResponse response) throws IOException {
+		List<Map<String, Object>> data = communicateInfoService.exportListData(param);
+		ExcelWriter writer = ExcelUtil.getWriter();
+		writer.addHeaderAlias("sj", "手机号码");
+		writer.addHeaderAlias("gsd", "归属地");
+		writer.addHeaderAlias("gsd1", "归属地1");
+		writer.addHeaderAlias("lx", "来源地");
+		writer.addHeaderAlias("dfxq", "到访地");
+		writer.addHeaderAlias("xzmc", "乡镇名称");
+		writer.addHeaderAlias("jzmc", "基站名称");
+		writer.addHeaderAlias("lksj", "离开时间");
+		writer.addHeaderAlias("days", "驻留时间(天)");
+		writer.addHeaderAlias("yys", "运营商");
+		writer.addHeaderAlias("dz", "基站地址");
+		writer.addHeaderAlias("date", "最后通信日期");
+		writer.addHeaderAlias("status", "是否排查");
+		writer.write(data);
+		response.setContentType("application/vnd.ms-excel;charset=utf-8"); 
+		response.setHeader("Content-Disposition","attachment;filename=test.xls"); 
+		ServletOutputStream out = response.getOutputStream(); 
+		writer.flush(out);
+		writer.close();
+	}
+	
+	@GetMapping("/statisticsData")
+	public ResultInfo statisticsData(Page page, CommunicateParam param, @RequestHeader String token) throws ContentException {
+		param.setCode(getCode(token));
+		List<StatisticsData> data = communicateInfoService.statisticsData(param);
 		return ResultInfoUtil.success(data);
 	}
 	

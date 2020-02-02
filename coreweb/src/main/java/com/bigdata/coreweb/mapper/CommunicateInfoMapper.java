@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bigdata.coreweb.entity.CommunicateInfo;
 import com.bigdata.coreweb.model.CommunicateParam;
+import com.bigdata.coreweb.model.StatisticsData;
 
 /**
  * <p>
@@ -20,4 +21,6 @@ public interface CommunicateInfoMapper extends BaseMapper<CommunicateInfo> {
 	List<Map<String, Object>> list(CommunicateParam param, Page page);
 	List<Map<String, Object>> listByPhone(CommunicateParam param, Page page);
 	List<Map<String, Object>> listData(CommunicateParam param, Page page);
+	List<Map<String, Object>> exportListData(CommunicateParam param);
+	List<StatisticsData> statisticsData(CommunicateParam param);
 }

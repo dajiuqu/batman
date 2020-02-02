@@ -1,9 +1,13 @@
 package com.bigdata.coreweb.service;
 
-import com.bigdata.coreweb.entity.CommunicateInfo;
-import com.bigdata.coreweb.model.CommunicateParam;
+import java.util.List;
+import java.util.Map;
+
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.bigdata.coreweb.entity.CommunicateInfo;
+import com.bigdata.coreweb.model.CommunicateParam;
+import com.bigdata.coreweb.model.StatisticsData;
 
 /**
  * <p>
@@ -17,4 +21,6 @@ public interface ICommunicateInfoService extends IService<CommunicateInfo> {
 	Page list(CommunicateParam param, Page page);
 	Page listByPhone(CommunicateParam param, Page page);
 	Page listData(CommunicateParam param, Page page);
+	List<Map<String, Object>> exportListData(CommunicateParam param);
+	List<StatisticsData> statisticsData(CommunicateParam param);
 }
