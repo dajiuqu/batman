@@ -26,7 +26,7 @@
 		from 
 			(
 				SELECT 
-					sj,gsd,gsd1,lx,dfxq,xzmc,jzmc,lksj,yys,dz,max(date) as date,
+					sj,gsd,gsd1,lx,dfxq,xzmc,jzmc,lksj,yys,dz,max(date) as date
 				FROM 
 					sjhm 
 				WHERE 
@@ -122,10 +122,10 @@
 		FROM (
 		SELECT a.dfxq,SUM(1) AS phoneNum FROM (
 		SELECT dfxq,lx FROM sjhm  WHERE xzdm LIKE concat(#{code},'%') 
-		<if test="startDate != null and startDate != ''">
+		<if test="startDate != null">
 			and date <![CDATA[ >= ]]> #{startDate}
 		</if>
-		<if test="endDate != null and endDate != ''">
+		<if test="endDate != null">
 			and date <![CDATA[ <= ]]> #{endDate}
 		</if>
 		GROUP BY sj,dfxq ) a 
@@ -133,10 +133,10 @@
 		LEFT JOIN (
 		SELECT a.dfxq,SUM(1) AS whNum FROM (
 		SELECT dfxq,lx FROM sjhm  WHERE xzdm LIKE concat(#{code},'%')  AND lx = '武汉' 
-		<if test="startDate != null and startDate != ''">
+		<if test="startDate != null">
 			and date <![CDATA[ >= ]]> #{startDate}
 		</if>
-		<if test="endDate != null and endDate != ''">
+		<if test="endDate != null">
 			and date <![CDATA[ <= ]]> #{endDate}
 		</if> 
 		GROUP BY sj,dfxq ) a 
@@ -144,10 +144,11 @@
 		LEFT JOIN (
 		SELECT a.dfxq,SUM(1) AS hbNum FROM (
 		SELECT dfxq,lx FROM sjhm  WHERE xzdm LIKE concat(#{code},'%')  AND lx = '湖北' 
-		<if test="startDate != null and startDate != ''">
+		and sj not in (SELECT sj FROM sjhm  WHERE xzdm LIKE concat(#{code},'%')  AND lx = '武汉' )
+		<if test="startDate != null">
 			and date <![CDATA[ >= ]]> #{startDate}
 		</if>
-		<if test="endDate != null and endDate != ''">
+		<if test="endDate != null">
 			and date <![CDATA[ <= ]]> #{endDate}
 		</if>
 		GROUP BY sj,dfxq ) a 
@@ -155,10 +156,10 @@
 		LEFT JOIN (
 		SELECT f.name,SUM(1) AS oneNum FROM (
 		SELECT auth_code,phone FROM troubleshoot_info WHERE auth_code LIKE concat(#{code},'%') 
-		<if test="startDate != null and startDate != ''">
+		<if test="startDate != null">
 			and time <![CDATA[ >= ]]> #{startDate}
 		</if>
-		<if test="endDate != null and endDate != ''">
+		<if test="endDate != null">
 			and time <![CDATA[ <= ]]> #{endDate}
 		</if>
 		AND phone_status IN (3,4) GROUP BY phone,auth_code) e
@@ -166,10 +167,10 @@
 		LEFT JOIN (
 		SELECT f.name,SUM(1) AS twoNum FROM (
 		SELECT auth_code,phone FROM troubleshoot_info WHERE auth_code LIKE concat(#{code},'%') 
-		<if test="startDate != null and startDate != ''">
+		<if test="startDate != null">
 			and time <![CDATA[ >= ]]> #{startDate}
 		</if>
-		<if test="endDate != null and endDate != ''">
+		<if test="endDate != null">
 			and time <![CDATA[ <= ]]> #{endDate}
 		</if>
 		AND phone_status IN (1,2) GROUP BY phone,auth_code) e
@@ -177,10 +178,10 @@
 		LEFT JOIN (
 		SELECT f.name,SUM(1) AS threeNum FROM (
 		SELECT auth_code,phone FROM troubleshoot_info WHERE auth_code LIKE concat(#{code},'%') 
-		<if test="startDate != null and startDate != ''">
+		<if test="startDate != null">
 			and time <![CDATA[ >= ]]> #{startDate}
 		</if>
-		<if test="endDate != null and endDate != ''">
+		<if test="endDate != null">
 			and time <![CDATA[ <= ]]> #{endDate}
 		</if>
 		AND phone_status = 5 GROUP BY phone,auth_code) e

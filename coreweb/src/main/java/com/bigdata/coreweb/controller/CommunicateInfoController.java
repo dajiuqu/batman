@@ -111,7 +111,7 @@ public class CommunicateInfoController {
 	}
 	
 	@GetMapping("/statisticsData")
-	public ResultInfo statisticsData(Page page, CommunicateParam param, @RequestHeader String token) throws ContentException {
+	public ResultInfo statisticsData(CommunicateParam param, @RequestHeader String token) throws ContentException {
 		param.setCode(getCode(token));
 		List<StatisticsData> data = communicateInfoService.statisticsData(param);
 		return ResultInfoUtil.success(data);
