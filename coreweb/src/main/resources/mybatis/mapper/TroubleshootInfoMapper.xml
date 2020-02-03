@@ -1,15 +1,157 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.bigdata.coreweb.mapper.TroubleshootInfoMapper">
-	<select id="list" parameterType="com.bigdata.coreweb.model.TroubleshootInfoParam" resultType="map">
+    <select id="list" parameterType="com.bigdata.coreweb.model.TroubleshootInfoParam" resultType="map">
 		SELECT
-		*
+			id,
+			phone,
+			person,
+			time,
+			info,
+			phone_status,
+			area,
+			audit_status,
+			audit_user,
+			audit_time,
+			creator,
+			create_time,
+			update_time
 		FROM
-		troubleshoot_info
-		WHERE
-		auth_code LIKE CONCAT(#{param.authCode},'%')
-		<if test="param.phone != null and param.phone != ''">
-			and phone LIKE CONCAT('%',#{param.phone},'%')
-		</if>
+			troubleshoot_info
+        <where>
+            <if test="param.id !=null ">
+                and id = #{param.id}
+            </if>
+            <if test="param.phone !=null and param.phone !='' ">
+                and phone like concat('%',#{param.phone},'%')
+            </if>
+            <if test="param.person !=null and param.person !='' ">
+                and person like concat('%',#{param.person},'%')
+            </if>
+            <if test="param.startDate != null ">
+                and <![CDATA[ time >= #{param.startDate} ]]>
+            </if>
+            <if test="param.endDate != null ">
+                and <![CDATA[ time <= #{param.endDate} ]]>
+            </if>
+            <if test="param.phoneStatus != null ">
+                and phone_status = #{param.phoneStatus}
+            </if>
+            <if test="param.area != null and param.area != '' ">
+                and area like concat(#{param.area},'%')
+            </if>
+            <if test="param.auditStatus != null ">
+                and audit_status = #{param.auditStatus}
+            </if>
+            <if test="param.auditUser != null and param.auditUser != '' ">
+                and audit_user = #{param.auditUser}
+            </if>
+            <if test="param.creator != null and param.creator != '' ">
+                and creator = #{param.creator}
+            </if>
+        </where>
+        order by update_time,create_time desc
 	</select>
+
+    <select id="listTroubleCount" parameterType="com.bigdata.coreweb.model.TroubleCountParam" resultType="map">
+        SELECT
+        e.date AS confirmDate,
+        sum(IF(e.xzdm LIKE'610902%',1,0)) AS hbq,
+        sum(IF(e.xzdm LIKE'610921%',1,0)) AS hyx,
+        sum(IF(e.xzdm LIKE'610922%',1,0)) AS sqx,
+        sum(IF(e.xzdm LIKE'610923%',1,0)) AS nsx,
+        sum(IF(e.xzdm LIKE'610924%',1,0)) AS zyx,
+        sum(IF(e.xzdm LIKE'610925%',1,0)) AS lgx,
+        sum(IF(e.xzdm LIKE'610926%',1,0)) AS plx,
+        sum(IF(e.xzdm LIKE'610927%',1,0)) AS zpx,
+        sum(IF(e.xzdm LIKE'610928%',1,0)) AS xyx,
+        sum(IF(e.xzdm LIKE'610929%',1,0)) AS bhx,
+        count(0) AS total
+        FROM (
+        SELECT a.*,IF(b.phone = NULL, 0, 1) AS STATUS,c.name as name
+        FROM (
+        SELECT sj,gsd,lx,dfds,date,xzdm
+        FROM sjhm
+        <where>
+            <if test="param.area != null and param.area != '' ">
+                AND xzdm LIKE concat(#{param.area},'%')
+            </if>
+            <if test="param.startDate != null ">
+                AND <![CDATA[ date >= str_to_date(#{param.startDate}, '%Y-%m-%d')]]>
+            </if>
+            <if test="param.endDate != null ">
+                AND <![CDATA[ date <= str_to_date(#{param.endDate}, '%Y-%m-%d')]]>
+            </if>
+        </where>
+        GROUP BY sj) a
+        LEFT JOIN (SELECT phone FROM troubleshoot_info
+        <where>
+            <if test="param.phoneStatus = '0' ">
+                and phone_status = '0'
+            </if>
+            <if test="param.phoneStatus = '1' ">
+                and phone_status != '0'
+            </if>
+        </where>
+         GROUP BY phone) b ON (a.sj = b.phone)
+        INNER JOIN district c on(c.code = a.xzdm)
+        ) e
+        <where>
+            <if test="param.phoneStatus = '0' ">
+                and e.STATUS = '1'
+            </if>
+        </where>
+        GROUP BY e.date ORDER BY e.date ASC
+    </select>
+
+    <select id="exportListData" parameterType="com.bigdata.coreweb.model.TroubleCountParam" resultType="com.bigdata.coreweb.entity.TroubleCountInfo">
+        SELECT
+        e.date AS confirmDate,
+        sum(IF(e.xzdm LIKE'610902%',1,0)) AS hbq,
+        sum(IF(e.xzdm LIKE'610921%',1,0)) AS hyx,
+        sum(IF(e.xzdm LIKE'610922%',1,0)) AS sqx,
+        sum(IF(e.xzdm LIKE'610923%',1,0)) AS nsx,
+        sum(IF(e.xzdm LIKE'610924%',1,0)) AS zyx,
+        sum(IF(e.xzdm LIKE'610925%',1,0)) AS lgx,
+        sum(IF(e.xzdm LIKE'610926%',1,0)) AS plx,
+        sum(IF(e.xzdm LIKE'610927%',1,0)) AS zpx,
+        sum(IF(e.xzdm LIKE'610928%',1,0)) AS xyx,
+        sum(IF(e.xzdm LIKE'610929%',1,0)) AS bhx,
+        count(0) AS total
+        FROM (
+        SELECT a.*,IF(b.phone = NULL, 0, 1) AS STATUS,c.name as name
+        FROM (
+        SELECT sj,gsd,lx,dfds,date,xzdm
+        FROM sjhm
+        <where>
+            <if test="area != null and area != '' ">
+                AND xzdm LIKE concat(#{area},'%')
+            </if>
+            <if test="startDate != null ">
+                AND <![CDATA[ date >= str_to_date(#{startDate}, '%Y-%m-%d')]]>
+            </if>
+            <if test="endDate != null ">
+                AND <![CDATA[ date <= str_to_date(#{endDate}, '%Y-%m-%d')]]>
+            </if>
+        </where>
+        GROUP BY sj) a
+        LEFT JOIN (SELECT phone FROM troubleshoot_info
+        <where>
+            <if test="phoneStatus = '0' ">
+                and phone_status = '0'
+            </if>
+            <if test="phoneStatus = '1' ">
+                and phone_status != '0'
+            </if>
+        </where>
+        GROUP BY phone) b ON (a.sj = b.phone)
+        INNER JOIN district c on(c.code = a.xzdm)
+        ) e
+        <where>
+            <if test="phoneStatus = '0' ">
+                and e.STATUS = '1'
+            </if>
+        </where>
+        GROUP BY e.date ORDER BY e.date ASC
+    </select>
 </mapper>

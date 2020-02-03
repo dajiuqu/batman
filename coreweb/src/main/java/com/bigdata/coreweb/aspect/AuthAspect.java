@@ -1,4 +1,5 @@
 package com.bigdata.coreweb.aspect;
+
 import com.bigdata.coreweb.model.LoginInfo;
 import com.bigdata.coreweb.util.RedisUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -11,8 +12,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.lang.reflect.Method;
-import java.util.List;
 
 /**
  * api 接口权限校验
@@ -43,9 +42,40 @@ public class AuthAspect {
 
     }
 
-
     public String getToken(HttpServletRequest request) {
         return request.getHeader("token");
+    }
+
+    public String getCode(HttpServletRequest request) {
+        return request.getHeader("code");
+    }
+
+    public LoginInfo getLoginfo(){
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        String token = this.getToken(request);
+        LoginInfo loginInfo = null;
+        if (token != null && redisUtil.hasKey(token)) {
+            loginInfo = (LoginInfo) redisUtil.get(token);
+        }
+        return loginInfo;
+    }
+
+    public String getLoginName(){
+        String longinName = "";
+        LoginInfo loginfo = this.getLoginfo();
+        if(loginfo != null){
+            longinName = loginfo.getName();
+        }
+        return longinName;
+    }
+
+    public String getLoginUserDistrictCode(){
+        String districtCode = "";
+        LoginInfo loginfo = this.getLoginfo();
+        if(loginfo != null){
+            districtCode = loginfo.getDistrictCode();
+        }
+        return districtCode;
     }
 
 }

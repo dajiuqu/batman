@@ -1,13 +1,12 @@
 package com.bigdata.coreweb.entity;
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.TableField;
-import java.io.Serializable;
-import java.util.Date;
-
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+
+import java.io.Serializable;
 
 /**
  * <p>
@@ -26,6 +25,12 @@ public class TroubleshootInfo implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
+     * id
+     */
+    @TableField("id")
+    private Integer id;
+
+    /**
      * 手机号码
      */
     @TableField("phone")
@@ -41,7 +46,7 @@ public class TroubleshootInfo implements Serializable {
      * 排查时间
      */
     @TableField("time")
-    private Date time;
+    private Long time;
 
     /**
      * 排查情况
@@ -92,16 +97,10 @@ public class TroubleshootInfo implements Serializable {
     private Long createTime;
 
     /**
-     * 更新时间
+     * 修改时间
      */
     @TableField("update_time")
     private Long updateTime;
-
-    /**
-     * 权限编码
-     */
-    @TableField("auth_code")
-    private String authCode;
 
 
 }

@@ -1,6 +1,10 @@
 package com.bigdata.coreweb.common;
 import lombok.Data;
 
+/**
+ * 返回通用类
+ * @param <T>
+ */
 @Data
 public class ResultInfo<T> {
     private T data;
