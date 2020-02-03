@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -46,7 +47,7 @@ public class TroubleshootInfo implements Serializable {
      * 排查时间
      */
     @TableField("time")
-    private Long time;
+    private Date time;
 
     /**
      * 排查情况
@@ -102,5 +103,9 @@ public class TroubleshootInfo implements Serializable {
     @TableField("update_time")
     private Long updateTime;
 
-
+    /**
+     * 编码
+     */
+    @TableField("auth_code")
+    private String authCode;
 }

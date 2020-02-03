@@ -15,7 +15,8 @@
 			audit_time,
 			creator,
 			create_time,
-			update_time
+			update_time,
+            auth_code
 		FROM
 			troubleshoot_info
         <where>
@@ -48,6 +49,9 @@
             </if>
             <if test="param.creator != null and param.creator != '' ">
                 and creator = #{param.creator}
+            </if>
+            <if test="param.authCode != null and param.authCode != '' ">
+                and auth_code LIKE CONCAT(#{param.authCode},'%')
             </if>
         </where>
         order by update_time,create_time desc

@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -46,7 +47,9 @@ public class TroubleshootInfoController {
      * @return
      */
     @PostMapping("/save")
-    public ResultInfo save(@RequestBody TroubleshootInfo troubleshootInfo) {
+    public ResultInfo save(@RequestBody TroubleshootInfo troubleshootInfo) throws ContentException {
+        troubleshootInfo.setTime(new Date());
+        troubleshootInfo.setAuthCode(authAspect.getLoginUserDistrictCode());
         troubleshootInfo.setCreateTime(DateTimeUtil.nowLong());
         troubleshootInfo.setCreator(authAspect.getLoginName());
         troubleshootInfoService.save(troubleshootInfo);
@@ -77,7 +80,8 @@ public class TroubleshootInfoController {
      */
     @GetMapping("/list")
     public ResultInfo list(Page page, TroubleshootInfoParam param) throws ContentException {
-        param.setArea(authAspect.getLoginUserDistrictCode());
+        //param.setArea(authAspect.getLoginUserDistrictCode());
+        param.setAuthCode(authAspect.getLoginUserDistrictCode());
         Page data = troubleshootInfoService.list(param, page);
         return ResultInfoUtil.success(data);
     }

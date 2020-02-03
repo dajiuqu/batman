@@ -20,5 +20,6 @@ public class TroubleshootInfoParam implements Serializable {
 	private String creator;
 	private Long createTime;
 	private Long updateTime;
+	private String authCode;
 
 }
