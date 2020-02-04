@@ -29,7 +29,7 @@ public class TroubleshootInfo implements Serializable {
      * id
      */
     @TableField("id")
-    private Integer id;
+    private String id;
 
     /**
      * 手机号码
