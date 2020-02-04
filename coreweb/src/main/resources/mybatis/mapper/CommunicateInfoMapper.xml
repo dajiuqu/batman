@@ -44,7 +44,7 @@
 						and date <![CDATA[ >= ]]> #{param.startDate}
 					</if>
 					<if test="param.endDate != null">
-						and dfxq <![CDATA[ <= ]]> #{param.endDate}
+						and date <![CDATA[ <= ]]> #{param.endDate}
 					</if>
 				GROUP BY sj,dfxq,xzmc,DATE
 			) a 
@@ -92,7 +92,7 @@
 						and date <![CDATA[ >= ]]> #{startDate}
 					</if>
 					<if test="endDate != null">
-						and dfxq <![CDATA[ <= ]]> #{endDate}
+						and date <![CDATA[ <= ]]> #{endDate}
 					</if>
 				GROUP BY sj,dfxq,xzmc,DATE
 			) a 
