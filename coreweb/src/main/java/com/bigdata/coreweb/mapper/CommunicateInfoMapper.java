@@ -21,7 +21,7 @@ import com.bigdata.coreweb.model.StatisticsData;
 public interface CommunicateInfoMapper extends BaseMapper<CommunicateInfo> {
 	List<Map<String, Object>> list(CommunicateParam param, Page page);
 	List<Map<String, Object>> listByPhone(CommunicateParam param, Page page);
-	List<Map<String, Object>> listData(CommunicateParam param, Page page);
+	List<ExportListData> listData(CommunicateParam param, Page page);
 	List<ExportListData> exportListData(CommunicateParam param);
 	List<StatisticsData> statisticsData(CommunicateParam param);
 }

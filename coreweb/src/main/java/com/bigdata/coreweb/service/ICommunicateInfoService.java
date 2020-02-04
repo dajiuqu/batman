@@ -20,7 +20,7 @@ import com.bigdata.coreweb.model.StatisticsData;
 public interface ICommunicateInfoService extends IService<CommunicateInfo> {
 	Page list(CommunicateParam param, Page page);
 	Page listByPhone(CommunicateParam param, Page page);
-	Page listData(CommunicateParam param, Page page);
+	Page<ExportListData> listData(CommunicateParam param, Page page);
 	List<ExportListData> exportListData(CommunicateParam param);
 	List<StatisticsData> statisticsData(CommunicateParam param);
 }

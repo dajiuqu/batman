@@ -20,7 +20,7 @@
 			and xzdm LIKE concat(#{param.code},'%') 
 		GROUP BY DATE,jzbs
 	</select>
-	<select id="listData" parameterType="com.bigdata.coreweb.model.CommunicateParam" resultType="map">
+	<select id="listData" parameterType="com.bigdata.coreweb.model.CommunicateParam" resultType="com.bigdata.coreweb.model.ExportListData">
 		SELECT 
 			a.*,COUNT(1) as days,IF(b.phone is NULL, 0, 1) AS status
 		from 

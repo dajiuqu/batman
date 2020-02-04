@@ -37,7 +37,7 @@ public class CommunicateInfoServiceImpl extends ServiceImpl<CommunicateInfoMappe
 	}
 
 	@Override
-	public Page listData(CommunicateParam param, Page page) {
+	public Page<ExportListData> listData(CommunicateParam param, Page page) {
 		page.setRecords(getBaseMapper().listData(param, page));
 		return page;
 	}
