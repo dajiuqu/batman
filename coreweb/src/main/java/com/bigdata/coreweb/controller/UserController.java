@@ -88,7 +88,9 @@ public class UserController {
     @GetMapping("/findPage")
     public ResultInfo findPage( UserVo user) throws SystemException {
         QueryWrapper queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("district_code",user.getDistrictCode());
+        if(!StringUtil.isNullOrEmpty(user.getDistrictCode())) {
+            queryWrapper.eq("district_code",user.getDistrictCode());
+        }
         if(!StringUtil.isNullOrEmpty(user.getName())) {
             queryWrapper.like("name", user.getName());
         }
