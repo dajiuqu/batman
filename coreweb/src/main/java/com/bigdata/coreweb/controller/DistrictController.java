@@ -100,8 +100,8 @@ public class DistrictController {
     @PostMapping("/findPage")
     public ResultInfo findPage(DistrictVo district) throws SystemException {
         QueryWrapper queryWrapper = new QueryWrapper<>();
-        if(!StringUtil.isNullOrEmpty(district.getCode())){
-            queryWrapper.eq("parent_id",district.getCode());
+        if(!StringUtil.isNullOrEmpty(district.getDistrictId())){
+            queryWrapper.eq("parent_id",district.getDistrictId());
         }else {
             queryWrapper.isNull("parent_id");
         }

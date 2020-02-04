@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class DistrictVo {
     private String name;
-    private String code;
+    private String districtId;
     private Integer current;
     private Integer size;
 }
