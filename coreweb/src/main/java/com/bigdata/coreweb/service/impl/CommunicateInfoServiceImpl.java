@@ -1,7 +1,6 @@
 package com.bigdata.coreweb.service.impl;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -10,6 +9,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bigdata.coreweb.entity.CommunicateInfo;
 import com.bigdata.coreweb.mapper.CommunicateInfoMapper;
 import com.bigdata.coreweb.model.CommunicateParam;
+import com.bigdata.coreweb.model.ExportListData;
 import com.bigdata.coreweb.model.StatisticsData;
 import com.bigdata.coreweb.service.ICommunicateInfoService;
 
@@ -37,13 +37,13 @@ public class CommunicateInfoServiceImpl extends ServiceImpl<CommunicateInfoMappe
 	}
 
 	@Override
-	public Page listData(CommunicateParam param, Page page) {
+	public Page<ExportListData> listData(CommunicateParam param, Page page) {
 		page.setRecords(getBaseMapper().listData(param, page));
 		return page;
 	}
 
 	@Override
-	public List<Map<String, Object>> exportListData(CommunicateParam param) {
+	public List<ExportListData> exportListData(CommunicateParam param) {
 		return getBaseMapper().exportListData(param);
 	}
 
