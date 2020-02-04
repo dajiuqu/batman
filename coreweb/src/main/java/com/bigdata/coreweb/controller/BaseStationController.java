@@ -15,6 +15,7 @@ import com.bigdata.coreweb.service.BaseStationService;
 import com.bigdata.coreweb.service.ICommunicateInfoService;
 import com.bigdata.coreweb.util.RedisUtil;
 import com.bigdata.coreweb.util.ResultInfoUtil;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,13 +44,13 @@ public class BaseStationController {
 	AuthAspect authAspect;
 	
 	/**
-	 * 查询通信情况列表
-	 * @param page
+	 * 基站热力图
 	 * @return
 	 * @throws ContentException 
 	 */
-	@GetMapping("/list")
-	public ResultInfo list(Page page, CommunicateParam param, @RequestHeader String token) throws ContentException {
+	@ApiOperation(value ="基站热力图",httpMethod = "post")
+	@PostMapping("/list")
+	public ResultInfo list(CommunicateParam param, @RequestHeader String token) throws ContentException {
 		param.setCode(authAspect.getLoginUserDistrictCode());
 		List<BaseStation> list = new ArrayList<BaseStation>();
 		list = baseStationService.list(param);
@@ -63,8 +64,5 @@ public class BaseStationController {
 		LoginInfo user = (LoginInfo)obj;
 		return user.getDistrictCode();
 	}
-
-
-
 
 }
