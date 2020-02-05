@@ -10,6 +10,7 @@ public enum ResultStatus {
     PASSWORD_ERROR(101, "密码不正确"),
     USERNAME_REPEAT(101, "用户名重复"),
     DISTRICT_NAME_REPEAT(102, "区域名称重复"),
+    DISTRICT_NAME_HAVE_CHILD(102, "区域存在子区域，不能删除"),
     DISTRICT_CODE_REPEAT(102, "区域名称CODE重复"),
     EXCEPTION(201, "系统内部异常");
     private int code;

@@ -77,7 +77,15 @@ public class DistrictController {
     @ApiOperation("区划删除")
     @DeleteMapping("/delete")
     public ResultInfo delete(String[] ids) throws SystemException {
+        QueryWrapper queryWrapper = new QueryWrapper<>();
         for (String id : ids) {
+            if(!StringUtil.isNullOrEmpty(id)){
+                queryWrapper.eq("parent_id",id);
+            }
+            List<District>districtList =districtService.list(queryWrapper);
+            if (districtList.size()>0) {
+                throw new SystemException(ResultStatus.DISTRICT_NAME_HAVE_CHILD);
+            }
             districtService.removeById(id);
         }
         return ResultInfoUtil.success();
