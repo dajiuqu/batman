@@ -110,9 +110,11 @@ public class DistrictController {
         QueryWrapper queryWrapper = new QueryWrapper<>();
         if(!StringUtil.isNullOrEmpty(district.getDistrictId())){
             queryWrapper.eq("parent_id",district.getDistrictId());
-        }else {
+        }/*else {
+            queryWrapper.eq("parent_id","");
+            queryWrapper.or();
             queryWrapper.isNull("parent_id");
-        }
+        }*/
         if(!StringUtil.isNullOrEmpty(district.getName())){
             queryWrapper.like("name",district.getName());
         }
