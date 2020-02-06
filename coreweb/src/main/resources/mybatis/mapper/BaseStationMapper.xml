@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.bigdata.coreweb.mapper.BaseStationMapper">
 	<select id="list" parameterType="com.bigdata.coreweb.model.CommunicateParam" resultType="map">
-		 select count(sj)as countd ,max(gps_jd) as gps_jd,max(gps_wd)as gps_wd, jzmc from (select  t2.jzmc,t2.sj,t2.date,t1.gps_jd,t1.gps_wd from jz_byjzmc t1 left join sjhm t2 on t1.id=t2.jzid where t2.jzid is not null) t group by t.jzmc
+		 select count(sj)as countd ,max(gps_jd) as gps_jd,max(gps_wd)as gps_wd, jzmc from (select  t2.jzmc,t2.sj,t2.date,t1.gps_jd,t1.gps_wd from jz_byjzmc t1 left join sjhm_lj15thzak t2 on t1.id=t2.jzid where t2.jzid is not null) t group by t.jzmc
 	</select>
 
 </mapper>
